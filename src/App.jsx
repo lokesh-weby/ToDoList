@@ -5,6 +5,8 @@ function App() {
 
   useEffect(()=>{
     localStorage.setItem("todos",JSON.stringify(todolist))
+    const completedTasksCount = todolist.filter(task => task.isComplete).length;
+    setCountBool(completedTasksCount);
   })
 
   document.addEventListener('keydown', function(event) {
@@ -15,6 +17,7 @@ function App() {
   const inputRef=useRef();
 
   const [todolist,setTodolist]=useState(localStorage.getItem("todos")?JSON.parse(localStorage.getItem("todos")):[])
+  const [countBool,setCountBool]=useState(1);
 
 const add=()=>{
   const inputText=inputRef.current.value.trim();
@@ -41,6 +44,10 @@ const updateTask=(id)=>{
   })
 }
 
+const percentage=Math.floor(100/(todolist.length)*countBool);
+
+
+
 const deleteTask=(id)=>{
   setTodolist((prev)=>{
     return prev.filter((todo)=>todo.id!=id);
@@ -50,6 +57,20 @@ const deleteTask=(id)=>{
     <>
     <section className='max-w-[85vw] m-auto my-20'>
       <h1 className='text-yellow-500 font-bold'>To-Do List</h1>
+      {todolist.length>0? 
+      <>
+      <h1 className='text-white'>{percentage}% completed</h1>
+       <div className='w-full rounded-xl overflow-hidden my-5 bg-gray-300 '>
+        
+           
+       <span className='bg-green-600 block h-3 ' style={{width:`${(100/(todolist.length)*countBool)}%`}}></span>
+  </div>
+  </>
+      
+      :null}
+     
+     
+  
       <div className='flex my-2 gap-2'>
         <input type="text" placeholder='Enter the task' className='bg-white flex-1 p-3 focus:outline-none rounded' ref={inputRef} />
         <button className='bg-yellow-600 p-3 px-4 rounded' onClick={add}>Add Task</button>
